@@ -1,0 +1,17 @@
+
+<h1>Index!</h1>
+<% let nama="juneadi" %>
+
+<h4>Daftar Mahasiswa</h4>
+<img src="/images/gambar.png" alt="">
+<ul>
+    <% if(dataMahasiswa.length < 1){ %>
+        <h2>Data masih kosong.</h2>
+    <% } %>
+
+    <% dataMahasiswa.forEach(mhs => { %>
+        <li>
+            Nama : <%= mhs.nama %> , nomor : <%= mhs.nim %> 
+        </li>    
+    <% }) %>
+</ul>
