@@ -12,12 +12,14 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                   <% contacts.forEach(contact => { %>
+                     <tr>
                         <th scope="row">1</th>
-                        <td>Edi</td>
-                        <td>0892371923</td>
-                        <td><a href="" class="btn btn-success badge rounded-pill"> <i class="bi bi-info-circle"></i> Detail</a></td>
+                        <td><%= contact.nama %></td>
+                        <td><%= contact.noHP %></td>
+                        <td><a href="/contact/<%= contact.nama %>" class="btn btn-success badge rounded-pill"> <i class="bi bi-info-circle"></i> Detail</a></td>
                     </tr>
+                   <% }) %>
                 </tbody> 
             </table>
         </div>

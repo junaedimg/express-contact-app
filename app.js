@@ -1,7 +1,7 @@
 import express from 'express';
 import currentModulePaths from 'current-module-paths';
 import expressEjsLayouts from 'express-ejs-layouts';
-import { loadContact } from './utils/contacts.js';
+import { loadContact,findContact } from './utils/contacts.js';
 
 const app = express();
 const port = 3000;
@@ -29,9 +29,22 @@ app.get('/about', (req, res) => {
 });
 
 app.get('/contact', (req, res) => {
+    const contacts = loadContact();
+    console.lo
     res.render('contact', {
         layout: 'layouts/main-layout',
         title: 'Halaman contact',
+        contacts 
+    });
+});
+
+app.get('/contact/:nama', (req, res) => {
+    const contact = findContact(req.params.nama);
+    console.log(contact)
+    res.render('detail', {
+        layout: 'layouts/main-layout',
+        title: 'Halaman Detail',
+        contact
     });
 });
 

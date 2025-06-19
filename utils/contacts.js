@@ -18,3 +18,12 @@ export const loadContact = () => {
 
     return contacts;
 };
+
+export const findContact = (nama) => {
+    const contacts = loadContact();
+    const contact = contacts.find((elm) => {
+        return elm.nama.toLowerCase() === nama.toLowerCase();
+    });
+
+    return contact;
+};
