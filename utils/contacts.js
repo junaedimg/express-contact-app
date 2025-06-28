@@ -27,3 +27,15 @@ export const findContact = (nama) => {
 
     return contact;
 };
+
+// Menyimpan perubahan data contacts dengan minimpa data json.
+const saveContacts = (contacts) => {
+    fs.writeFileSync('data/contacts.json', JSON.stringify(contacts));
+};
+
+// Menambah Contact
+export const addContact = (contact) => {
+    const contacts = loadContact();
+    contacts.push(contact);
+    saveContacts(contacts);
+};

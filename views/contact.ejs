@@ -2,6 +2,7 @@
     <div class="row">
         <div class="col-md-8">
             <h2>Daftar Contact</h2>
+            <a type="button" class="btn btn-primary" href="/addcontact">Tambah Data</a>
             <table class="table">
                 <thead>
                     <tr>
@@ -12,15 +13,20 @@
                     </tr>
                 </thead>
                 <tbody>
-                   <% contacts.forEach(contact => { %>
-                     <tr>
-                        <th scope="row">1</th>
-                        <td><%= contact.nama %></td>
-                        <td><%= contact.noHP %></td>
-                        <td><a href="/contact/<%= contact.nama %>" class="btn btn-success badge rounded-pill"> <i class="bi bi-info-circle"></i> Detail</a></td>
-                    </tr>
-                   <% }) %>
-                </tbody> 
+                    <% contacts.forEach(contact=> { %>
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>
+                                <%= contact.nama %>
+                            </td>
+                            <td>
+                                <%= contact.noHP %>
+                            </td>
+                            <td><a href="/contact/<%= contact.nama %>" class="btn btn-success badge rounded-pill"> <i
+                                        class="bi bi-info-circle"></i> Detail</a></td>
+                        </tr>
+                        <% }) %>
+                </tbody>
             </table>
         </div>
     </div>
