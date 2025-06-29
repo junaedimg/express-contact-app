@@ -2,18 +2,28 @@
     <div class="row">
         <div class="col-md-12">
             <h2>Form Tambah Data Contact</h2>
+            <% if(typeof errors != 'undefined') { %>
+                <div class="alert alert-danger" role="alert">
+                    Terdapat errors
+                    <ul>
+                        <% errors.forEach(error => { %>
+                            <li><%= error.msg %></li>
+                        <% }); %>
+                    </ul>
+                </div>
+            <% } %>
             <form method="post" action="contact">
                 <div class="mb-3">
                     <label for="nama">Nama</label>
-                    <input type="text" class="form-control" id="nama" name="nama" required>
+                    <input type="text" class="form-control" id="nama" name="nama" value="<%= data?.nama || '' %>" required>
                 </div>
                 <div class="mb-3">
                     <label for="email">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" required>
+                    <input type="email" class="form-control" id="email" name="email" value="<%= data?.email || '' %>" required>
                 </div>
                 <div class="mb-3">
                     <label for="email">No HP</label>
-                    <input type="text" class="form-control" id="nohp" name="noHP" required>
+                    <input type="text" class="form-control" id="nohp" name="noHP" value="<%= data?.noHP || '' %>" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Tambah Data Contact</button>
             </form>

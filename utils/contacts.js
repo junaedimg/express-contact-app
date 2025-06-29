@@ -39,3 +39,9 @@ export const addContact = (contact) => {
     contacts.push(contact);
     saveContacts(contacts);
 };
+
+// Cek nama yang duplikat
+export const cekDuplikasi = (contact) => {
+    const contacts = loadContact();
+    return contacts.find((val) => val.nama == contact);
+};

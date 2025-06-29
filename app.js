@@ -2,12 +2,17 @@ import express from 'express';
 import currentModulePaths from 'current-module-paths';
 import expressEjsLayouts from 'express-ejs-layouts';
 import { body, validationResult } from 'express-validator';
-import { loadContact, findContact, addContact } from './utils/contacts.js';
+import session from 'express-session';
+import cookieParser from 'cookie-parser';
+import flash from 'connect-flash';
+import {
+    cekDuplikasi,
+    loadContact,
+    findContact,
+    addContact,
+} from './utils/contacts.js';
 
-// setInterval(() => {
-//     console.clear();
-//     console.log(' === Console dibersihkan otomatis === ');
-// }, 20000);
+console.log('============= script di eksekusi =============');
 
 const app = express();
 const port = 3000;
@@ -18,6 +23,18 @@ app.set('view engine', 'ejs');
 app.use(expressEjsLayouts);
 app.use(express.static('assets'));
 app.use(express.urlencoded());
+app.use(cookieParser('rahasia')); // Optional secret kalau mau signed cookie
+app.use(
+    session({
+        secret: 'rahasia',
+        resave: false,
+        saveUninitialized: true,
+        cookie: {
+            maxAge: 10000, // 15 menit dalam milidetik
+        },
+    }),
+);
+app.use(flash());
 
 app.get('/', (req, res) => {
     let dataMahasiswa = [];
@@ -36,23 +53,57 @@ app.get('/about', (req, res) => {
 });
 
 app.get('/contact', (req, res) => {
+    console.log(req.params)
     const contacts = loadContact();
+    console.log('masuk');
     res.render('contact', {
         layout: 'layouts/main-layout',
         title: 'Halaman contact',
         contacts,
+        msg: req.flash('msg'),
     });
 });
 
-app.post('/contact', (req, res) => {
-    addContact(req.body);
-    res.redirect('/contact');
-});
+app.post(
+    '/contact',
+    [
+        body('nama').custom((val) => {
+            const duplikat = cekDuplikasi(val);
+            if (duplikat) {
+                throw new Error('nama sudah di gunakan');
+            }
+            return true;
+        }),
+        body('email').isEmail().withMessage('format email tidak valid'),
+        body('noHP')
+            .isMobilePhone('id-ID')
+            .withMessage('Nomor HP tidak valid'),
+    ],
+    (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            // return res.status(400).json({ err: errors.array() });
+            // console.log('==================');
+            // console.log(errors);
+            res.render('add-contact', {
+                layout: 'layouts/main-layout',
+                title: 'Halaman Tambah Contact',
+                errors: errors.array(),
+                data : req.body || {}    
+            });
+        } else {
+            req.flash('msg', 'Data kontak berhasil ditambahkan !');
+            addContact(req.body);
+            res.redirect('/contact');
+        }
+    },
+);
 
 app.get('/addcontact', (req, res) => {
     res.render('add-contact', {
         layout: 'layouts/main-layout',
         title: 'Halaman Tambah Contact',
+        data: {}
     });
 });
 
