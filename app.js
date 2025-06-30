@@ -10,6 +10,7 @@ import {
     loadContact,
     findContact,
     addContact,
+    deleteContact
 } from './utils/contacts.js';
 
 console.log('============= script di eksekusi =============');
@@ -53,7 +54,7 @@ app.get('/about', (req, res) => {
 });
 
 app.get('/contact', (req, res) => {
-    console.log(req.params)
+    console.log(req.params);
     const contacts = loadContact();
     console.log('masuk');
     res.render('contact', {
@@ -75,9 +76,7 @@ app.post(
             return true;
         }),
         body('email').isEmail().withMessage('format email tidak valid'),
-        body('noHP')
-            .isMobilePhone('id-ID')
-            .withMessage('Nomor HP tidak valid'),
+        body('noHP').isMobilePhone('id-ID').withMessage('Nomor HP tidak valid'),
     ],
     (req, res) => {
         const errors = validationResult(req);
@@ -89,7 +88,7 @@ app.post(
                 layout: 'layouts/main-layout',
                 title: 'Halaman Tambah Contact',
                 errors: errors.array(),
-                data : req.body || {}    
+                data: req.body || {},
             });
         } else {
             req.flash('msg', 'Data kontak berhasil ditambahkan !');
@@ -103,8 +102,20 @@ app.get('/addcontact', (req, res) => {
     res.render('add-contact', {
         layout: 'layouts/main-layout',
         title: 'Halaman Tambah Contact',
-        data: {}
+        data: {},
     });
+});
+
+app.get('/contact/delete/:nama', (req, res) => {
+    const contact = findContact(req.params.nama);
+    if (!contact) {
+        res.status(404);
+        res.send('<h1>Status = 404</h1>');
+    } else {
+        deleteContact(req.params.nama);
+        req.flash('msg', 'Data kontak berhasil dihapus !');
+        res.redirect('/contact');
+    }
 });
 
 app.get('/contact/:nama', (req, res) => {

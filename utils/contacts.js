@@ -45,3 +45,19 @@ export const cekDuplikasi = (contact) => {
     const contacts = loadContact();
     return contacts.find((val) => val.nama == contact);
 };
+
+export const deleteContact = (nama) => {
+    const contacts = loadContact();
+
+    const newContact = contacts.filter(
+        (contact) => contact.nama.toLowerCase() !== nama.toLowerCase(),
+    );
+
+    if (contacts.length === newContact.length) {
+        console.log('Nama tidak ditemukan !');
+        return;
+    }
+
+    saveContacts(newContact);
+    console.log('Contact berhasil dihapus !');
+};

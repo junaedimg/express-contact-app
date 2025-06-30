@@ -18,9 +18,13 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <% contacts.forEach(contact=> { %>
+                    
+                    <% 
+                        let i = 1;
+                        contacts.forEach(contact=> { 
+                    %>
                         <tr>
-                            <th scope="row">1</th>
+                            <th scope="row"><%= i++ %></th>
                             <td>
                                 <%= contact.nama %>
                             </td>
