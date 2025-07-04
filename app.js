@@ -10,7 +10,8 @@ import {
     loadContact,
     findContact,
     addContact,
-    deleteContact
+    deleteContact,
+    updateContacts,
 } from './utils/contacts.js';
 
 console.log('============= script di eksekusi =============');
@@ -56,7 +57,6 @@ app.get('/about', (req, res) => {
 app.get('/contact', (req, res) => {
     console.log(req.params);
     const contacts = loadContact();
-    console.log('masuk');
     res.render('contact', {
         layout: 'layouts/main-layout',
         title: 'Halaman contact',
@@ -85,8 +85,8 @@ app.post(
             // console.log('==================');
             // console.log(errors);
             res.render('add-contact', {
-                layout: 'layouts/main-layout',
                 title: 'Halaman Tambah Contact',
+                layout: 'layouts/main-layout',
                 errors: errors.array(),
                 data: req.body || {},
             });
@@ -98,11 +98,50 @@ app.post(
     },
 );
 
-app.get('/addcontact', (req, res) => {
+app.post(
+    '/contact/update',
+    [
+        body('nama').custom((val, { req }) => {
+            const duplikat = cekDuplikasi(val);
+            if (val != req.body.oldNama && duplikat) {
+                throw new Error('nama sudah di gunakan');
+            }
+            return true;
+        }),
+        body('email').isEmail().withMessage('format email tidak valid'),
+        body('noHP').isMobilePhone('id-ID').withMessage('Nomor HP tidak valid'),
+    ],
+    (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            res.render('edit-contact', {
+                title: 'Halaman Edit Contact',
+                layout: 'layouts/main-layout',
+                errors: errors.array(),
+                contact: req.body
+            });
+        } else {
+            updateContacts(req.body);
+            req.flash('msg', 'Data kontak berhasil diubah !');
+            res.redirect('/contact');
+        }
+    },
+);
+
+app.get('/contact/add', (req, res) => {
     res.render('add-contact', {
-        layout: 'layouts/main-layout',
         title: 'Halaman Tambah Contact',
+        layout: 'layouts/main-layout',
         data: {},
+    });
+});
+
+app.get('/contact/edit/:nama', (req, res) => {
+    const contact = findContact(req.params.nama);
+    res.render('edit-contact', {
+        title: 'Halaman Edit Contact',
+        layout: 'layouts/main-layout',
+        contact,
     });
 });
 
@@ -122,8 +161,8 @@ app.get('/contact/:nama', (req, res) => {
     const contact = findContact(req.params.nama);
     // console.log(contact);
     res.render('detail', {
-        layout: 'layouts/main-layout',
         title: 'Halaman Detail',
+        layout: 'layouts/main-layout',
         contact,
     });
 });

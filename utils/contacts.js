@@ -39,6 +39,19 @@ export const addContact = (contact) => {
     contacts.push(contact);
     saveContacts(contacts);
 };
+// update contact
+export const updateContacts = (contactBaru) => {
+    const contacts = loadContact();
+
+    // hilang nama lama
+    const filteredContacts = contacts.filter(
+        (contact) => contact.nama !== contactBaru.oldNama,
+    );
+    delete contactBaru.oldNama;
+    filteredContacts.push(contactBaru);
+    saveContacts(filteredContacts);
+    // console.log(filteredContacts,contactBaru)
+};
 
 // Cek nama yang duplikat
 export const cekDuplikasi = (contact) => {
